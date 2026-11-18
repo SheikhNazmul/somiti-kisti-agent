@@ -33,11 +33,9 @@ async def get_session() -> AsyncIterator[AsyncSession]:
         try:
             yield session
             await session.commit()
-        except:
+        except Exception:
             await session.rollback()
             raise
 
 
 SessionDep = Annotated[AsyncSession, Depends(get_session, scope="function")]
-
-StreamingSessionDep = Annotated[AsyncSession, Depends(get_session)]
