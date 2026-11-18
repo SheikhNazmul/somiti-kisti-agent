@@ -9,7 +9,7 @@ WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy
 
-# Copy ONLY the dependency manifests first (see Section C4 on caching)
+# Copy only the dependency files first for Docker layer caching
 COPY pyproject.toml uv.lock ./
 
 # Install dependencies into /app/.venv, without installing our own code yet
