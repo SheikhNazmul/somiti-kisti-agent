@@ -11,6 +11,7 @@ from app.core.config import Settings, get_settings
 from app.core.errors import AppError
 from app.db.session import SessionDep
 from app.modules.areas.controllers import areas_router
+from app.modules.gata.controllers import gata_router
 from app.modules.installments.controllers import installments_router
 from app.modules.loans.controllers import loans_router
 from app.modules.members.controllers import members_router
@@ -129,5 +130,6 @@ api_router.include_router(areas_router)
 api_router.include_router(members_router)
 api_router.include_router(loans_router)
 api_router.include_router(installments_router)
+api_router.include_router(gata_router)
 
 app.include_router(api_router)
