@@ -1,1 +1,92 @@
-[{"member_phone":"01711111111","num_installments":20,"paid_installments":3,"principal":20000,"service_charge_pct":10,"start_date":"2026-11-07"},{"member_phone":"01733333333","num_installments":10,"paid_installments":1,"principal":10000,"service_charge_pct":10,"start_date":"2026-11-08"}]
+[
+  {
+    "member_phone": "01710000001",
+    "principal": 20000,
+    "service_charge_pct": 10,
+    "num_installments": 20,
+    "start_date": "2026-09-05",
+    "paid_installments": 8,
+    "status": "active"
+  },
+  {
+    "member_phone": "01710000002",
+    "principal": 15000,
+    "service_charge_pct": 10,
+    "num_installments": 15,
+    "start_date": "2026-09-12",
+    "paid_installments": 15,
+    "status": "closed"
+  },
+  {
+    "member_phone": "01710000003",
+    "principal": 30000,
+    "service_charge_pct": 15,
+    "num_installments": 30,
+    "start_date": "2026-08-29",
+    "paid_installments": 4,
+    "status": "defaulted"
+  },
+  {
+    "member_phone": "01710000004",
+    "principal": 10000,
+    "service_charge_pct": 5,
+    "num_installments": 10,
+    "start_date": "2026-10-03",
+    "paid_installments": 3,
+    "status": "active"
+  },
+  {
+    "member_phone": "01710000005",
+    "principal": 50000,
+    "service_charge_pct": 10,
+    "num_installments": 40,
+    "start_date": "2026-09-19",
+    "paid_installments": 12,
+    "status": "active"
+  },
+  {
+    "member_phone": "01710000006",
+    "principal": 8000,
+    "service_charge_pct": 10,
+    "num_installments": 12,
+    "start_date": "2026-08-22",
+    "paid_installments": 2,
+    "status": "defaulted"
+  },
+  {
+    "member_phone": "01710000007",
+    "principal": 25000,
+    "service_charge_pct": 12,
+    "num_installments": 25,
+    "start_date": "2026-10-10",
+    "paid_installments": 6,
+    "status": "active"
+  },
+  {
+    "member_phone": "01710000008",
+    "principal": 12000,
+    "service_charge_pct": 10,
+    "num_installments": 20,
+    "start_date": "2026-09-26",
+    "paid_installments": 1,
+    "status": "defaulted"
+  },
+  {
+    "member_phone": "01710000009",
+    "principal": 18000,
+    "service_charge_pct": 8,
+    "num_installments": 18,
+    "start_date": "2026-10-17",
+    "paid_installments": 5,
+    "status": "active"
+  },
+  {
+    "member_phone": "01710000010",
+    "principal": 40000,
+    "service_charge_pct": 10,
+    "num_installments": 36,
+    "start_date": "2026-09-05",
+    "paid_installments": 20,
+    "status": "active"
+  }
+]

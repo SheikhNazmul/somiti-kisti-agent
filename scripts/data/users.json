@@ -1,1 +1,20 @@
-[{"email":"manager@somiti.local","full_name":"Somiti Manager","password":"manager123","role":"admin"},{"email":"rahim@somiti.local","full_name":"Rahim Uddin","password":"collector123","role":"collector"},{"email":"karim@somiti.local","full_name":"Karim Ahmed","password":"collector123","role":"collector"}]
+[
+  {
+    "email": "manager@somiti.local",
+    "password": "manager123",
+    "full_name": "Somiti Manager",
+    "role": "admin"
+  },
+  {
+    "email": "rahim@somiti.local",
+    "password": "collector123",
+    "full_name": "Rahim Uddin",
+    "role": "collector"
+  },
+  {
+    "email": "karim@somiti.local",
+    "password": "collector123",
+    "full_name": "Karim Sheikh",
+    "role": "collector"
+  }
+]
