@@ -12,13 +12,20 @@ from app.core.config import get_settings
 
 settings = get_settings()
 
+connect_args: dict = {
+    "server_settings": {"search_path": settings.DB_SCHEMA}
+}
+if settings.DB_SSL:
+    # Cloud databases (Neon, Render external) require an SSL connection.
+    connect_args["ssl"] = True
+
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,  # log SQL queries
     pool_size=5,
     max_overflow=10,
     pool_pre_ping=True,  # ping the database to check if it's still alive
-    connect_args={"server_settings": {"search_path": settings.DB_SCHEMA}},
+    connect_args=connect_args,
 )
 
 SessionLocal = async_sessionmaker(

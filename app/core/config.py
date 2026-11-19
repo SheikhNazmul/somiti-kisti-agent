@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     DB_PASSWORD: SecretStr = SecretStr("postgres")
     DB_NAME: str = "somiti"
     DB_SCHEMA: str = "somiti"
+    DB_SSL: bool = False
 
     JWT_SECRET: SecretStr
     JWT_ALGORITHM: str = "HS256"
