@@ -3,6 +3,7 @@ from sqlalchemy import text
 
 from app.core.config import Settings, get_settings
 from app.db.session import SessionDep
+from app.modules.users.controllers import auth_router
 
 app = FastAPI(title=get_settings().APP_NAME)
 
@@ -30,5 +31,7 @@ async def health_db(session: SessionDep) -> dict[str, str]:
         "has_vector": "yes" if has_vector else "no",
     }
 
+
+api_router.include_router(auth_router)
 
 app.include_router(api_router)
