@@ -29,7 +29,7 @@ async def get_current_user(
     except (ValueError, TypeError, AttributeError):
         raise credentials_error from None
     user = await repositories.get_user_by_id(session, user_id)
-    if user is None:
+    if user is None or not user.is_active:
         raise credentials_error
     return user
 

@@ -14,14 +14,15 @@ INVALID_CREDENTIALS_MESSAGE = "Invalid email or password"
 
 
 async def register_user(session: AsyncSession, data: UserRegister) -> User:
-    existing = await repositories.get_user_by_email(session, str(data.email))
+    email = str(data.email).lower()
+    existing = await repositories.get_user_by_email(session, email)
     if existing is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Email already registered",
         )
     user = User(
-        email=str(data.email),
+        email=email,
         password_hash=hash_password(data.password),
         full_name=data.full_name,
         role=UserRole.collector,
@@ -30,8 +31,12 @@ async def register_user(session: AsyncSession, data: UserRegister) -> User:
 
 
 async def login_user(session: AsyncSession, email: str, password: str) -> str:
-    user = await repositories.get_user_by_email(session, email)
-    if user is None or not verify_password(password, user.password_hash):
+    user = await repositories.get_user_by_email(session, email.lower())
+    if (
+        user is None
+        or not user.is_active
+        or not verify_password(password, user.password_hash)
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=INVALID_CREDENTIALS_MESSAGE,
