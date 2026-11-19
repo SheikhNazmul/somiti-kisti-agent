@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError
@@ -22,9 +23,33 @@ app = FastAPI(title=get_settings().APP_NAME)
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
+    headers = (
+        {"WWW-Authenticate": "Bearer"} if exc.status_code == 401 else None
+    )
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": exc.code, "message": exc.message},
+        headers=headers,
+    )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_error_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
+    codes = {
+        401: "unauthorized",
+        403: "forbidden",
+        404: "not_found",
+        409: "conflict",
+    }
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": codes.get(exc.status_code, "http_error"),
+            "message": str(exc.detail),
+        },
+        headers=getattr(exc, "headers", None),
     )
 
 
