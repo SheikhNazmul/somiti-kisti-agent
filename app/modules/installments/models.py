@@ -2,7 +2,14 @@ import uuid
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import Date, ForeignKey, Integer, Numeric, UniqueConstraint
+from sqlalchemy import (
+    CheckConstraint,
+    Date,
+    ForeignKey,
+    Integer,
+    Numeric,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -13,6 +20,12 @@ class Installment(Base, TimeStampMixin):
     __tablename__ = "installments"
     __table_args__ = (
         UniqueConstraint("loan_id", "number", name="uq_installments_loan_number"),
+        CheckConstraint(
+            "amount_due > 0", name="ck_installments_amount_due_positive"
+        ),
+        CheckConstraint(
+            "amount_paid >= 0", name="ck_installments_amount_paid_non_negative"
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -22,7 +35,7 @@ class Installment(Base, TimeStampMixin):
         nullable=False,
     )
     number: Mapped[int] = mapped_column(Integer, nullable=False)
-    due_date: Mapped[date] = mapped_column(Date, nullable=False)
+    due_date: Mapped[date] = mapped_column(Date, nullable=False, index=True)
     amount_due: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     amount_paid: Mapped[Decimal] = mapped_column(
         Numeric(12, 2), nullable=False, default=Decimal("0")

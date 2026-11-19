@@ -20,7 +20,8 @@ class Area(Base, TimeStampMixin):
     __tablename__ = "areas"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     collection_day: Mapped[CollectionDay] = mapped_column(
-        Enum(CollectionDay, name="collection_day"), nullable=False
+        Enum(CollectionDay, name="collection_day", native_enum=False, length=10),
+        nullable=False,
     )

@@ -56,7 +56,7 @@ class Loan(Base, TimeStampMixin):
     )
     start_date: Mapped[date] = mapped_column(Date, nullable=False)
     status: Mapped[LoanStatus] = mapped_column(
-        Enum(LoanStatus, name="loan_status"),
+        Enum(LoanStatus, name="loan_status", native_enum=False, length=20),
         nullable=False,
         default=LoanStatus.active,
     )

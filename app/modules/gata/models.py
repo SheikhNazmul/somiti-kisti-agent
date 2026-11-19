@@ -1,4 +1,5 @@
 import enum
+import uuid
 from datetime import date
 from decimal import Decimal
 
@@ -13,30 +14,51 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
 )
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimeStampMixin
 
 
 class GataGroupStatus(str, enum.Enum):
-    active = "active"
-    closed = "closed"
+    forming = "forming"
+    running = "running"
+    completed = "completed"
+
+
+class GataFrequency(str, enum.Enum):
+    weekly = "weekly"
+    monthly = "monthly"
 
 
 class GataGroup(Base, TimeStampMixin):
     __tablename__ = "gata_groups"
     __table_args__ = (
         CheckConstraint("amount > 0", name="ck_gata_groups_amount_positive"),
+        CheckConstraint(
+            "total_slots > 0", name="ck_gata_groups_total_slots_positive"
+        ),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+    frequency: Mapped[GataFrequency] = mapped_column(
+        Enum(GataFrequency, name="gata_frequency", native_enum=False, length=10),
+        nullable=False,
+        default=GataFrequency.weekly,
+    )
+    total_slots: Mapped[int] = mapped_column(Integer, nullable=False)
     start_date: Mapped[date] = mapped_column(Date, nullable=False)
     status: Mapped[GataGroupStatus] = mapped_column(
-        Enum(GataGroupStatus, name="gata_group_status"),
+        Enum(
+            GataGroupStatus,
+            name="gata_group_status",
+            native_enum=False,
+            length=20,
+        ),
         nullable=False,
-        default=GataGroupStatus.active,
+        default=GataGroupStatus.forming,
     )
 
 
@@ -95,4 +117,7 @@ class GataPayment(Base, TimeStampMixin):
     )
     round_number: Mapped[int] = mapped_column(Integer, nullable=False)
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
-    paid_on: Mapped[date | None] = mapped_column(Date, nullable=True)
+    paid_on: Mapped[date] = mapped_column(Date, nullable=False)
+    collected_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=True
+    )
