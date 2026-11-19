@@ -1,6 +1,6 @@
-from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.errors import ConflictError, UnauthorizedError
 from app.core.security import (
     create_access_token,
     hash_password,
@@ -17,10 +17,7 @@ async def register_user(session: AsyncSession, data: UserRegister) -> User:
     email = str(data.email).lower()
     existing = await repositories.get_user_by_email(session, email)
     if existing is not None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Email already registered",
-        )
+        raise ConflictError("Email already registered")
     user = User(
         email=email,
         password_hash=hash_password(data.password),
@@ -37,8 +34,5 @@ async def login_user(session: AsyncSession, email: str, password: str) -> str:
         or not user.is_active
         or not verify_password(password, user.password_hash)
     ):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=INVALID_CREDENTIALS_MESSAGE,
-        )
+        raise UnauthorizedError(INVALID_CREDENTIALS_MESSAGE)
     return create_access_token(user.id)
