@@ -17,6 +17,7 @@ import uuid
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from starlette.responses import JSONResponse
 
 from app.core.security import decode_access_token
@@ -34,6 +35,22 @@ mcp = FastMCP(
     stateless_http=True,
     json_response=True,
     streamable_http_path="/",
+    # DNS rebinding protection stays on: only this service's own public
+    # host and local addresses may call the MCP endpoint.
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=[
+            "somiti-kisti-agent.onrender.com",
+            "127.0.0.1:*",
+            "localhost:*",
+            "[::1]:*",
+        ],
+        allowed_origins=[
+            "https://somiti-kisti-agent.onrender.com",
+            "http://127.0.0.1:*",
+            "http://localhost:*",
+        ],
+    ),
 )
 
 
