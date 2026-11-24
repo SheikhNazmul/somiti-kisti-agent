@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import APIRouter, Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -10,6 +11,8 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.core.config import Settings, get_settings
 from app.core.errors import AppError
 from app.db.session import SessionDep
+from app.mcp_server import mcp as mcp_server
+from app.mcp_server import mcp_http_app
 from app.modules.areas.controllers import areas_router
 from app.modules.chat.controllers import chat_router
 from app.modules.gata.controllers import gata_router
@@ -21,7 +24,15 @@ from app.modules.users.controllers import auth_router
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title=get_settings().APP_NAME)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # The MCP server mounted at /mcp needs its session manager running
+    # for as long as the API is up.
+    async with mcp_server.session_manager.run():
+        yield
+
+
+app = FastAPI(title=get_settings().APP_NAME, lifespan=lifespan)
 
 
 @app.exception_handler(AppError)
@@ -137,3 +148,6 @@ api_router.include_router(chat_router)
 api_router.include_router(knowledge_router)
 
 app.include_router(api_router)
+
+# The MCP server lives outside /api/v1: MCP clients connect to /mcp.
+app.mount("/mcp", mcp_http_app)
