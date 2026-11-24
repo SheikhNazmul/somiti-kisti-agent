@@ -42,4 +42,4 @@ USER app
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python -m scripts.bootstrap_db && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
+CMD ["sh", "-c", "python -m scripts.bootstrap_db && alembic upgrade head && python -m scripts.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT"]
