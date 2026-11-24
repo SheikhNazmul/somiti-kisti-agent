@@ -89,5 +89,5 @@ async def generate_reply(
                     name=call.name, response={"result": result}
                 )
             )
-        contents.append(types.Content(role="function", parts=result_parts))
+        contents.append(types.Content(role="user", parts=result_parts))
     raise LLMError()
