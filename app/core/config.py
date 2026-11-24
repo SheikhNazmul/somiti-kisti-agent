@@ -23,7 +23,7 @@ class Settings(BaseSettings):
 
     LLM_PROVIDER: str = "gemini"
     LLM_API_KEY: SecretStr
-    LLM_MODEL: str = "gemini-2.5-flash"
+    LLM_MODEL: str = "gemini-3.5-flash-lite"
 
     @field_validator("JWT_SECRET")
     @classmethod
