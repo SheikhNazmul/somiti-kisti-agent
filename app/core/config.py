@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 60
 
+    LLM_PROVIDER: str = "gemini"
+    LLM_API_KEY: SecretStr
+    LLM_MODEL: str = "gemini-2.5-flash"
+
     @field_validator("JWT_SECRET")
     @classmethod
     def validate_jwt_secret(cls, value: SecretStr) -> SecretStr:
@@ -29,8 +33,11 @@ class Settings(BaseSettings):
         return value
 
     @property
-    def DATABASE_URL(self) -> URL:
-        return URL.create(
+    def LLM_API_KEY_VALUE(self) -> str:
+        return self.LLM_API_KEY.get_secret_value()
+
+    @property
+    def DATABASE_URL(self) -> URL:        return URL.create(
             drivername="postgresql+asyncpg",
             username=self.DB_USER,
             password=self.DB_PASSWORD.get_secret_value(),
