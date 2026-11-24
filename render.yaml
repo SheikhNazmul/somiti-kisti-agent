@@ -5,7 +5,6 @@ services:
     region: singapore
     plan: free
     healthCheckPath: /api/v1/health
-    dockerCommand: sh -c "python -m scripts.bootstrap_db && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: DB_HOST
         fromDatabase:
