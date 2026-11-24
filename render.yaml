@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: somiti-kisti-agent
+    runtime: docker
+    region: singapore
+    plan: free
+    healthCheckPath: /api/v1/health
+    dockerCommand: sh -c "python -m scripts.bootstrap_db && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: somiti-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: somiti-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: somiti-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: somiti-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: somiti-db
+          property: database
+      - key: DB_SCHEMA
+        value: somiti
+      - key: DB_SSL
+        value: "false"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRE_MINUTES
+        value: "60"
+      - key: PORT
+        value: "8000"
+
+databases:
+  - name: somiti-db
+    plan: free
+    region: singapore
+    postgresMajorVersion: "18"
