@@ -7,6 +7,7 @@ from app.modules.gata.models import (  # noqa: F401
     GataPayment,
 )
 from app.modules.installments.models import Installment  # noqa: F401
+from app.modules.knowledge.models import KnowledgeChunk  # noqa: F401
 from app.modules.loans.models import Loan  # noqa: F401
 from app.modules.members.models import Member  # noqa: F401
 from app.modules.users.models import User  # noqa: F401

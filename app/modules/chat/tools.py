@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.errors import AppError
 from app.modules.gata import services as gata_services
 from app.modules.installments import services as installment_services
+from app.modules.knowledge import services as knowledge_services
 from app.modules.loans import repositories as loan_repositories
 from app.modules.members import services as member_services
 
@@ -74,6 +75,25 @@ TOOL_DECLARATIONS = [
                 "group_id": types.Schema(type=types.Type.INTEGER)
             },
             required=["group_id"],
+        ),
+    ),
+    types.FunctionDeclaration(
+        name="search_knowledge",
+        description=(
+            "Search the somiti's rule book for how things work: loan and "
+            "installment rules, gata rules, membership rules. Use this for "
+            "questions about rules and procedures, not for one member's "
+            "personal numbers."
+        ),
+        parameters=types.Schema(
+            type=types.Type.OBJECT,
+            properties={
+                "query": types.Schema(
+                    type=types.Type.STRING,
+                    description="The rule question, in the user's own words.",
+                )
+            },
+            required=["query"],
         ),
     ),
 ]
@@ -165,12 +185,22 @@ async def _get_gata_status(session: AsyncSession, args: dict[str, Any]) -> dict:
     }
 
 
+async def _search_knowledge(
+    session: AsyncSession, args: dict[str, Any]
+) -> dict:
+    result = await knowledge_services.search_knowledge(
+        session, str(args["query"])
+    )
+    return {"passages": [row["content"] for row in result["results"]]}
+
+
 _HANDLERS = {
     "find_member": _find_member,
     "get_member_balance": _get_member_balance,
     "list_due_installments": _list_due_installments,
     "list_gata_groups": _list_gata_groups,
     "get_gata_status": _get_gata_status,
+    "search_knowledge": _search_knowledge,
 }
 
 

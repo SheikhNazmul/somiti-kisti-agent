@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     LLM_API_KEY: SecretStr
     LLM_MODEL: str = "gemini-3.5-flash-lite"
 
+    EMBEDDING_MODEL: str = "gemini-embedding-001"
+    EMBEDDING_DIM: int = 768
+    RAG_TOP_K: int = 4
+    RAG_MAX_DISTANCE: float = 0.5
+
     @field_validator("JWT_SECRET")
     @classmethod
     def validate_jwt_secret(cls, value: SecretStr) -> SecretStr:
