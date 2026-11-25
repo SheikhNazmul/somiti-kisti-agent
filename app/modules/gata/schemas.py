@@ -45,7 +45,6 @@ class GataMemberOut(BaseModel):
 class GataPaymentCreate(BaseModel):
     member_id: int
     round_number: int = Field(ge=1)
-    amount: Decimal = Field(gt=0)
 
 
 class GataPaymentOut(BaseModel):
