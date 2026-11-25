@@ -135,6 +135,10 @@ async def record_payment(
         raise ConflictError(
             f"Payments are only accepted for the current round ({round_now})"
         )
+    if data.amount != group.amount:
+        raise ConflictError(
+            f"Payment must equal the group amount ({group.amount})"
+        )
     existing = await repositories.get_payment(
         session, group_id, data.member_id, data.round_number
     )
