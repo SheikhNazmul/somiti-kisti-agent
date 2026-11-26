@@ -1,14 +1,34 @@
 # Frontend
 
-The frontend of Somiti Kisti Agent — planned, not built yet. It is designed
-in Figma and will be a thin layer over the backend API (see `BACKEND.md`):
-every figure on every screen comes from an API response, and no business
-rule lives in the frontend.
+The frontend of Somiti Kisti Agent lives in `frontend/`. It is a thin layer
+over the backend API (see `BACKEND.md`): every figure on every screen comes
+from an API response, and no business rule lives in the frontend.
 
-- **Design:** seven mobile screens in Figma, deep green `#065F46` on white,
-  Inter + Hind Siliguri fonts
-- **Form:** a static web app deployed on Netlify — no server of its own
-- **API base:** https://somiti-kisti-agent.onrender.com (all calls under `/api/v1`)
+- **Design:** Bangla UI, warm paper background with navy and saffron, Hind
+  Siliguri font — tokens and screen map in `design/`
+- **Form:** a static web app (plain HTML, CSS and JS modules, no build step)
+- **API base:** https://somiti-kisti-agent.onrender.com (all calls under
+  `/api/v1`). The app calls `/api/v1/...` on its own domain, and the
+  `frontend/netlify.toml` rule forwards `/api/*` to Render, so the browser
+  never makes a cross-origin call.
+
+## Run it locally
+
+The backend has no CORS middleware, so locally point `API_BASE` at nothing and
+serve through a proxy, or simply open the Netlify deploy. For a quick look:
+
+```bash
+cd frontend
+python -m http.server 8080   # then open http://localhost:8080
+```
+
+API calls only work where `/api/*` is proxied (Netlify). To test against a
+local backend, run both behind one origin or add CORS to your own backend.
+
+## Deploy on Netlify
+
+Base directory `frontend`, no build command, publish directory `.`. The
+`netlify.toml` there already holds the `/api/*` proxy rule.
 
 ## How it connects to the backend
 
@@ -25,7 +45,7 @@ rule lives in the frontend.
 | Login | Email and password form | `POST /auth/login`, `GET /auth/me` |
 | Dashboard | Today's dues, gata round status, member count | `GET /installments/due`, `GET /gata/groups`, `GET /members` |
 | Members | Searchable member list | `GET /members` |
-| Member Details | One member: loans, installments, balance | `GET /members/{id}`, the member's loans and installments |
+| Member Details | One member: loans, balance, due installments with a collect action | `GET /members/{id}`, `GET /members/{id}/balance`, `GET /loans?member_id=`, `GET /installments/due` |
 | Loans & Due | Loan list and the due-installment visit list | `GET /loans`, `GET /installments/due` |
 | Gata Group | Group status, who has paid this round, record a payment, run the payout | `GET /gata/groups`, `GET /gata/groups/{id}/status`, `POST /gata/groups/{id}/payments`, `POST /gata/groups/{id}/payout` |
 | AI Chat | Bangla chat with the assistant | `POST /chat` with `{"messages": [{"role": "user", "content": "..."}]}` |
@@ -44,6 +64,6 @@ Notes for the build:
 
 | Part | State |
 |---|---|
-| Design (Figma) | Done — seven screens |
-| Build | Not started |
-| Deployment | Planned on Netlify once built |
+| Design | Tokens and screen map in `design/`; Figma file in progress |
+| Build | Done — seven screens in `frontend/` |
+| Deployment | Netlify, using `frontend/netlify.toml` |
