@@ -14,16 +14,16 @@ from an API response, and no business rule lives in the frontend.
 
 ## Run it locally
 
-The backend has no CORS middleware, so locally point `API_BASE` at nothing and
-serve through a proxy, or simply open the Netlify deploy. For a quick look:
+Start the backend with Docker first (it listens on `localhost:8002`), then:
 
 ```bash
 cd frontend
-python -m http.server 8080   # then open http://localhost:8080
+python dev_server.py          # open http://localhost:8080
 ```
 
-API calls only work where `/api/*` is proxied (Netlify). To test against a
-local backend, run both behind one origin or add CORS to your own backend.
+`dev_server.py` serves the files and forwards `/api/*` to the backend, the
+same way Netlify does in production, so no CORS change is needed. To use the
+live backend instead: `python dev_server.py --api https://somiti-kisti-agent.onrender.com`.
 
 ## Deploy on Netlify
 
