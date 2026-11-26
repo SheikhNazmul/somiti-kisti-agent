@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+
+# ব্রাউজার থেকে আসা /api/* অনুরোধ Render-এর ব্যাকএন্ডে যায়।
+# এতে ব্যাকএন্ডে CORS বদলাতে হয় না।
+[[redirects]]
+  from = "/api/*"
+  to = "https://somiti-kisti-agent.onrender.com/api/:splat"
+  status = 200
+  force = true
