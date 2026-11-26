@@ -24,7 +24,7 @@ export async function renderMembers() {
   }
 
   const chips = h('div', { class: 'chips' });
-  const renderChips = () => chips.replaceChildren(...[['', 'সবাই'], ['loan', 'ঋণ'], ['gata', 'গাটা'], ['both', 'ঋণ ও গাটা']].map(([v, l]) =>
+  const renderChips = () => chips.replaceChildren(...[['', 'সবাই'], ['loan', 'ঋণ'], ['gata', 'Islamic Saving Circle'], ['both', 'ঋণ ও Islamic Saving Circle']].map(([v, l]) =>
     h('button', { class: 'chip' + (state.type === v ? ' on' : ''), onClick: () => { state.type = v; renderChips(); load(); } }, l)));
   renderChips();
 

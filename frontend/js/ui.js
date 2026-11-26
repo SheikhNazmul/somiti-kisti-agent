@@ -27,7 +27,7 @@ export function date(iso) {
   return `${bn(d)} ${MONTHS[m - 1]} ${bn(y)}`;
 }
 export const DAYS = { sat: 'শনিবার', sun: 'রবিবার', mon: 'সোমবার', tue: 'মঙ্গলবার', wed: 'বুধবার', thu: 'বৃহস্পতিবার', fri: 'শুক্রবার' };
-export const TYPES = { loan: 'ঋণ', gata: 'গাটা', both: 'ঋণ ও গাটা' };
+export const TYPES = { loan: 'ঋণ', gata: 'Islamic Saving Circle', both: 'ঋণ ও Islamic Saving Circle' };
 export const STATUS = { active: 'চলমান', closed: 'শেষ', defaulted: 'খেলাপি', forming: 'গঠনাধীন', running: 'চলছে', completed: 'সম্পন্ন' };
 
 export const badge = (type) => h('span', { class: `badge badge-${type}` }, TYPES[type] || STATUS[type] || type);

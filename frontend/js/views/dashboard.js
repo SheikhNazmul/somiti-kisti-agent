@@ -31,13 +31,13 @@ export async function renderDashboard() {
               h('span', { class: 'amount' }, money(Number(i.amount_due) - Number(i.amount_paid))));
           })) : h('div', { class: 'empty' }, 'কোনো বকেয়া নেই 🎉'),
           due.length > 8 && h('a', { href: '#/loans', class: 'btn btn-ghost btn-small' }, 'সব দেখো')),
-        h('div', { class: 'card gold-card narrow' }, h('h2', null, 'গাটার অবস্থা'),
+        h('div', { class: 'card gold-card narrow' }, h('h2', null, 'Islamic Saving Circle-এর অবস্থা'),
           statuses.length ? statuses.map(({ g, s }) => h('div', null,
             h('b', null, g.name), ' ',
             h('span', { class: 'muted' }, `রাউন্ড ${bn(s.current_round)}/${bn(s.total_rounds)} · বাকি ${bn(s.unpaid_member_ids.length)} জন`),
             h('div', { class: 'progress' }, h('i', { style: `width:${(s.current_round / s.total_rounds) * 100}%` }))))
             : h('div', { class: 'muted' }, 'চলমান কোনো গ্রুপ নেই'),
-          h('a', { href: '#/gata', class: 'btn btn-gold btn-small' }, 'গাটা দেখো'))),
+          h('a', { href: '#/gata', class: 'btn btn-gold btn-small' }, 'Islamic Saving Circle দেখো'))),
     );
   } catch (e) { page.append(errorBox(e, () => location.reload())); }
   return page;

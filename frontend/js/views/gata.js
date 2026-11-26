@@ -48,7 +48,7 @@ export async function renderGata() {
     [groups, members] = await Promise.all([api.groups(), api.members()]);
     selected = (groups.find((g) => g.status === 'running') || groups[0])?.id;
   } catch (e) { return h('div', null, errorBox(e, () => location.reload())); }
-  page.append(h('div', { class: 'page-head' }, h('h1', null, 'গাটা গ্রুপ')), chips, detail);
+  page.append(h('div', { class: 'page-head' }, h('h1', null, 'Islamic Saving Circle')), chips, detail);
   renderChips(); show();
   return page;
 }

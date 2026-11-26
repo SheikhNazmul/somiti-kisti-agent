@@ -40,7 +40,7 @@ export function renderLogin(onDone) {
     h('section', { class: 'login-brand' },
       h('div', { class: 'brand' }, h('span', { class: 'logo' }, '৳'), 'সমিতি কিস্তি'),
       h('div', null, h('h1', null, 'কিস্তির হিসাব, এখন হাতের মুঠোয়'),
-        h('p', null, 'সদস্য, ঋণ, কিস্তি আর গাটা — সব এক জায়গায়। কিছু জানতে চাইলে এআই সহকারীকে জিজ্ঞেস করো।')),
+        h('p', null, 'সদস্য, ঋণ, কিস্তি আর Islamic Saving Circle — সব এক জায়গায়। কিছু জানতে চাইলে এআই সহকারীকে জিজ্ঞেস করো।')),
       h('p', { class: 'muted' }, 'Somiti Kisti Agent')),
     h('section', { class: 'login-form' }, form));
 }
