@@ -14,7 +14,7 @@ export function renderLogin(onDone) {
   } }, 'দেখাও');
   const btn = h('button', { class: 'btn btn-primary', type: 'submit' }, 'প্রবেশ করো');
   const form = h('form', null,
-    h('h2', null, 'লগইন'),
+    h('h2', null, 'আবার স্বাগতম'),
     h('p', { class: 'muted' }, 'ইমেইল ও পাসওয়ার্ড দিয়ে ঢোকো।'),
     h('div', { class: 'field' }, h('label', { for: 'email' }, 'ইমেইল'), email),
     h('div', { class: 'field' }, h('label', { for: 'password' }, 'পাসওয়ার্ড'), h('div', { class: 'pass-wrap' }, pass, toggle)),
@@ -39,8 +39,8 @@ export function renderLogin(onDone) {
   return h('div', { class: 'login' },
     h('section', { class: 'login-brand' },
       h('div', { class: 'brand' }, h('span', { class: 'logo' }, '৳'), 'সমিতি কিস্তি'),
-      h('div', null, h('h1', null, 'কালেক্টরের কিস্তির খাতা, এখন ফোনে'),
+      h('div', null, h('h1', null, 'কিস্তির হিসাব, এখন হাতের মুঠোয়'),
         h('p', null, 'সদস্য, ঋণ, কিস্তি আর Islamic Saving Circle — সব এক জায়গায়। কিছু জানতে চাইলে এআই সহকারীকে জিজ্ঞেস করো।')),
-      h('p', { class: 'foot' }, 'Somiti Kisti Agent')),
+      h('p', { class: 'muted' }, 'Somiti Kisti Agent')),
     h('section', { class: 'login-form' }, form));
 }

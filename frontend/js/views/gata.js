@@ -1,10 +1,10 @@
-import { h, bn, money, badge, errorBox, toast, confirmDialog, STATUS } from '../ui.js';
+import { h, bn, money, badge, errorBox, toast, STATUS } from '../ui.js';
 import { api } from '../api.js';
 import { isAdmin } from '../session.js';
 
 export async function renderGata() {
   const page = h('div', { class: 'main', style: 'padding:0' });
-  const detail = h('div', { class: 'card circle' });
+  const detail = h('div', { class: 'card' });
   let groups = [], members = [], selected = null;
 
   async function show() {
@@ -18,7 +18,7 @@ export async function renderGata() {
       detail.replaceChildren(
         h('div', { class: 'row' }, h('span', { class: 'grow' }, h('h2', null, g.name),
           h('span', { class: 'muted' }, `${money(g.amount)} · ${g.frequency === 'weekly' ? 'সাপ্তাহিক' : 'মাসিক'} · ${bn(g.total_slots)} জন`)), badge(g.status)),
-        g.status === 'running' ? h('div', { class: 'round' },
+        g.status === 'running' ? h('div', null,
           h('b', null, `রাউন্ড ${bn(s.current_round)} / ${bn(s.total_rounds)}`),
           h('div', { class: 'progress' }, h('i', { style: `width:${(s.current_round / s.total_rounds) * 100}%` })),
           h('p', { class: 'muted' }, `জিতেছেন ${bn(s.winners_count)} জন · এখনও জেতেননি ${bn(s.not_won_member_ids.length)} জন`)) : h('p', { class: 'muted' }, `অবস্থা: ${STATUS[g.status]}`),
@@ -30,12 +30,12 @@ export async function renderGata() {
             try { await api.gataPay(g.id, u.id, s.current_round); toast('জমা নেওয়া হয়েছে'); show(); }
             catch (ex) { toast(ex.message, true); e.target.disabled = false; }
           } }, 'জমা নিলাম')))) : h('div', { class: 'ok-card card' }, 'সবাই জমা দিয়েছে। এবার বিজয়ী নির্বাচন করা যাবে।')),
-        g.status === 'running' && isAdmin() && h('div', { class: 'actions' }, h('button', { class: 'btn btn-gold', disabled: unpaid.length > 0, onClick: () => confirmDialog({
-          title: 'এই রাউন্ডের পেআউট করবে?',
-          text: 'যারা এখনও পাননি তাদের মধ্য থেকে একজন এই রাউন্ডের পুরো টাকা পাবেন। এটা ফেরানো যায় না।',
-          confirmLabel: 'পেআউট করো',
-          onConfirm: async () => { const r = await api.payout(g.id); toast(`${r.winner_name} পেয়েছেন ${money(r.payout_amount)}`); await reload(); },
-        }) }, 'বিজয়ী নির্বাচন ও পেআউট')));
+        g.status === 'running' && isAdmin() && h('div', { class: 'actions' }, h('button', { class: 'btn btn-gold', disabled: unpaid.length > 0, onClick: async (e) => {
+          if (!confirm('বিজয়ী নির্বাচন ও পেআউট করবে?')) return;
+          e.target.disabled = true;
+          try { const r = await api.payout(g.id); toast(`${r.winner_name} পেয়েছেন ${money(r.payout_amount)}`); await reload(); }
+          catch (ex) { toast(ex.message, true); e.target.disabled = false; }
+        } }, 'বিজয়ী নির্বাচন ও পেআউট')));
     } catch (e) { detail.replaceChildren(errorBox(e, show)); }
   }
 

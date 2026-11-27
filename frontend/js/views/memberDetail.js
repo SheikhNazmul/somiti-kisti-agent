@@ -12,14 +12,14 @@ export async function renderMemberDetail(id) {
       const area = areas.find((a) => a.id === m.area_id);
       const pct = Number(bal.loan_total) ? (Number(bal.total_paid) / Number(bal.loan_total)) * 100 : 0;
       page.replaceChildren(
-        h('a', { href: '#/members', class: 'back' }, '← সদস্য তালিকা'),
+        h('a', { href: '#/members', class: 'muted' }, '← সদস্য তালিকা'),
         h('div', { class: 'card' }, h('div', { class: 'row' },
           h('span', { class: 'avatar' }, initial(m.full_name)),
           h('span', { class: 'grow' }, h('h1', null, m.full_name),
             h('span', { class: 'muted' }, `${bn(m.phone)} · ${area ? `${area.name} (${DAYS[area.collection_day]})` : ''} · যোগ দিয়েছেন ${date(m.joined_on)}`)),
           badge(m.account_type))),
         h('div', { class: 'grid' },
-          h('div', { class: 'card hero wide' }, h('span', { class: 'label' }, 'বাকি আছে'), h('div', { class: 'stat' }, money(bal.remaining)),
+          h('div', { class: 'card hero wide' }, h('span', { class: 'muted' }, 'বাকি আছে'), h('div', { class: 'stat' }, money(bal.remaining)),
             h('div', { class: 'progress' }, h('i', { style: `width:${Math.min(pct, 100)}%` })),
             h('span', { class: 'muted' }, `মোট ${money(bal.loan_total)} · শোধ ${money(bal.total_paid)}`))),
         h('div', { class: 'card' }, h('h2', null, 'ঋণ'),

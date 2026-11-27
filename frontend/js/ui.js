@@ -80,19 +80,6 @@ export function formDialog({ title, fields, submitLabel = 'সংরক্ষণ
   dlg.showModal();
 }
 
-// নিজস্ব নিশ্চিতকরণ ডায়ালগ, ব্রাউজারের confirm() এর বদলে
-export function confirmDialog({ title, text, confirmLabel = 'হ্যাঁ, করো', onConfirm }) {
-  const dlg = document.getElementById('dialog');
-  const err = h('div', { class: 'form-error', role: 'alert' });
-  const ok = h('button', { class: 'btn btn-primary', type: 'button', onClick: async () => {
-    ok.disabled = true; err.textContent = '';
-    try { await onConfirm(); dlg.close(); } catch (ex) { err.textContent = ex.message; } finally { ok.disabled = false; }
-  } }, confirmLabel);
-  dlg.replaceChildren(h('div', { class: 'form' }, h('h2', null, title), text && h('p', null, text), err,
-    h('div', { class: 'actions' }, h('button', { class: 'btn btn-ghost', type: 'button', onClick: () => dlg.close() }, 'বাতিল'), ok)));
-  dlg.showModal();
-}
-
 export function payDialog({ title, defaultAmount, onSubmit }) {
   formDialog({
     title, submitLabel: 'টাকা নিলাম',
