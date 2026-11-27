@@ -1,7 +1,7 @@
 import { h } from '../ui.js';
 import { api } from '../api.js';
 
-const SUGGESTIONS = ['আজ কাদের কিস্তি বকেয়া?', 'এই সপ্তাহে মোট কত টাকা আদায় হয়েছে?', 'Islamic Saving Circleে কে কে এখনও জেতেননি?'];
+const SUGGESTIONS = ['আজ কাদের কিস্তি বকেয়া?', 'এই সপ্তাহে মোট কত টাকা আদায় হয়েছে?', 'Islamic Saving Circle-এ কে কে এখনও জেতেননি?'];
 
 export async function renderChat() {
   const history = [];
@@ -11,17 +11,19 @@ export async function renderChat() {
   const chips = h('div', { class: 'chips' }, SUGGESTIONS.map((s) => h('button', { class: 'chip', type: 'button', onClick: () => ask(s) }, s)));
 
   const add = (role, text) => { const b = h('div', { class: `bubble ${role === 'user' ? 'user' : 'bot'}` }, text); box.append(b); box.scrollTop = box.scrollHeight; return b; };
-  add('assistant', 'আসসালামু আলাইকুম! সদস্য, কিস্তি বা Islamic Saving Circle নিয়ে যা জানতে চাও জিজ্ঞেস করো।');
+  add('assistant', 'আসসালামু আলাইকুম। সদস্য, কিস্তি বা Islamic Saving Circle নিয়ে যা জানতে চাও জিজ্ঞেস করো।');
 
   async function ask(text) {
     if (!text.trim() || send.disabled) return;
     chips.classList.add('hidden');
     history.push({ role: 'user', content: text });
     add('user', text); input.value = ''; send.disabled = true;
-    const typing = add('assistant', 'ভাবছি…');
+    const typing = add('assistant', 'উত্তর খুঁজছি…');
+    typing.classList.add('typing');
     try {
       const { reply } = await api.chat(history);
       typing.textContent = reply;
+      typing.classList.remove('typing');
       history.push({ role: 'assistant', content: reply });
     } catch (e) {
       typing.textContent = e.message;

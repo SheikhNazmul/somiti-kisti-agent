@@ -23,7 +23,7 @@ export async function renderLoans() {
             h('button', { class: 'btn btn-primary btn-small', onClick: () => payDialog({
               title: 'কিস্তি আদায়', defaultAmount: Number(i.amount_due) - Number(i.amount_paid),
               onSubmit: async (a) => { await api.pay(i.id, a); toast('কিস্তি আদায় হয়েছে'); load(); } }) }, 'আদায়'));
-        })) : h('div', { class: 'empty' }, 'কোনো বকেয়া নেই 🎉'));
+        })) : h('div', { class: 'empty' }, 'এই এলাকায় কোনো বকেয়া নেই'));
       } else {
         const loans = await api.loans();
         body.replaceChildren(loans.length ? h('div', { class: 'list' }, loans.map((l) => h('a', { class: 'row', href: `#/members/${l.member_id}` },
