@@ -5,6 +5,7 @@ import { renderLogin } from './views/login.js';
 import { renderDashboard } from './views/dashboard.js';
 import { renderMembers } from './views/members.js';
 import { renderMemberDetail } from './views/memberDetail.js';
+import { renderAreas } from './views/areas.js';
 import { renderLoans } from './views/loans.js';
 import { renderGata } from './views/gata.js';
 import { renderChat } from './views/chat.js';
@@ -14,6 +15,7 @@ const root = document.getElementById('app');
 const NAV = [
   ['#/', 'ড্যাশবোর্ড'],
   ['#/members', 'সদস্য'],
+  ['#/areas', 'এলাকা'],
   ['#/loans', 'ঋণ ও কিস্তি'],
   ['#/gata', 'Islamic Saving Circle'],
   ['#/chat', 'এআই সহকারী'],
@@ -45,7 +47,7 @@ function parse() {
   const m = hash.match(/^#\/members\/(\d+)$/);
   if (m) return { key: '#/members', view: renderMemberDetail, arg: Number(m[1]) };
   const table = {
-    '#/': renderDashboard, '#/members': renderMembers, '#/loans': renderLoans,
+    '#/': renderDashboard, '#/members': renderMembers, '#/areas': renderAreas, '#/loans': renderLoans,
     '#/gata': renderGata, '#/chat': renderChat,
   };
   return table[hash] ? { key: hash, view: table[hash] } : { key: '#/', view: renderDashboard };
