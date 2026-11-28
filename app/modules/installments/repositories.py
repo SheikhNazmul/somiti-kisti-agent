@@ -1,6 +1,7 @@
 from datetime import date
+from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.installments.models import Installment
@@ -44,3 +45,22 @@ async def count_unpaid_for_loan(session: AsyncSession, loan_id: int) -> int:
         )
     )
     return len(result.all())
+
+
+async def sum_collected_between(
+    session: AsyncSession, start: date, end: date
+) -> tuple[Decimal, int]:
+    """Total installment money collected between two dates, and how
+    many installments received a payment in that period."""
+    result = await session.execute(
+        select(
+            func.coalesce(func.sum(Installment.amount_paid), 0),
+            func.count(),
+        ).where(
+            Installment.paid_on >= start,
+            Installment.paid_on <= end,
+            Installment.amount_paid > 0,
+        )
+    )
+    total, count = result.one()
+    return Decimal(total), count

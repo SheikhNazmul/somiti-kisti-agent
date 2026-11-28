@@ -1,10 +1,13 @@
+from datetime import date, timedelta
 from typing import Any
 
 from google.genai import types
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import AppError
+from app.modules.gata import repositories as gata_repositories
 from app.modules.gata import services as gata_services
+from app.modules.installments import repositories as installment_repositories
 from app.modules.installments import services as installment_services
 from app.modules.knowledge import services as knowledge_services
 from app.modules.loans import repositories as loan_repositories
@@ -94,6 +97,36 @@ TOOL_DECLARATIONS = [
                 )
             },
             required=["query"],
+        ),
+    ),
+    types.FunctionDeclaration(
+        name="get_collection_summary",
+        description=(
+            "Get the total money collected in a period: loan installments "
+            "paid plus gata (Islamic Saving Circle) payments, each part "
+            "and the grand total. Use this for questions like 'how much "
+            "was collected this week / today / this month in total'. "
+            "period is one of: today, last_7_days, this_month, custom. "
+            "For custom, also pass start_date and end_date as YYYY-MM-DD."
+        ),
+        parameters=types.Schema(
+            type=types.Type.OBJECT,
+            properties={
+                "period": types.Schema(
+                    type=types.Type.STRING,
+                    description=(
+                        "today, last_7_days, this_month or custom."
+                    ),
+                ),
+                "start_date": types.Schema(
+                    type=types.Type.STRING,
+                    description="First day (YYYY-MM-DD), only for custom.",
+                ),
+                "end_date": types.Schema(
+                    type=types.Type.STRING,
+                    description="Last day (YYYY-MM-DD), only for custom.",
+                ),
+            },
         ),
     ),
 ]
@@ -194,6 +227,52 @@ async def _search_knowledge(
     return {"passages": [row["content"] for row in result["results"]]}
 
 
+async def _get_collection_summary(
+    session: AsyncSession, args: dict[str, Any]
+) -> dict:
+    today = date.today()
+    period = str(args.get("period") or "last_7_days")
+    if period == "today":
+        start = end = today
+    elif period == "this_month":
+        start = today.replace(day=1)
+        end = today
+    elif period == "custom":
+        try:
+            start = date.fromisoformat(str(args["start_date"]))
+            end = date.fromisoformat(str(args["end_date"]))
+        except (KeyError, ValueError):
+            return {
+                "error": (
+                    "A custom period needs start_date and end_date "
+                    "as YYYY-MM-DD."
+                )
+            }
+        if end < start:
+            start, end = end, start
+    else:
+        # last_7_days, and the fallback for anything unrecognised.
+        start = today - timedelta(days=6)
+        end = today
+    installment_total, installment_count = (
+        await installment_repositories.sum_collected_between(
+            session, start, end
+        )
+    )
+    gata_total, gata_count = await gata_repositories.sum_collected_between(
+        session, start, end
+    )
+    return {
+        "start_date": start.isoformat(),
+        "end_date": end.isoformat(),
+        "installment_collected": str(installment_total),
+        "installment_payments": installment_count,
+        "gata_collected": str(gata_total),
+        "gata_payments": gata_count,
+        "total_collected": str(installment_total + gata_total),
+    }
+
+
 _HANDLERS = {
     "find_member": _find_member,
     "get_member_balance": _get_member_balance,
@@ -201,6 +280,7 @@ _HANDLERS = {
     "list_gata_groups": _list_gata_groups,
     "get_gata_status": _get_gata_status,
     "search_knowledge": _search_knowledge,
+    "get_collection_summary": _get_collection_summary,
 }
 
 

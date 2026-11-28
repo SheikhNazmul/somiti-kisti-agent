@@ -1,3 +1,6 @@
+from datetime import date
+from decimal import Decimal
+
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -112,3 +115,21 @@ async def add_payment(
     session.add(payment)
     await session.flush()
     return payment
+
+
+async def sum_collected_between(
+    session: AsyncSession, start: date, end: date
+) -> tuple[Decimal, int]:
+    """Total gata money collected between two dates, and how many
+    payments were made in that period."""
+    result = await session.execute(
+        select(
+            func.coalesce(func.sum(GataPayment.amount), 0),
+            func.count(),
+        ).where(
+            GataPayment.paid_on >= start,
+            GataPayment.paid_on <= end,
+        )
+    )
+    total, count = result.one()
+    return Decimal(total), count

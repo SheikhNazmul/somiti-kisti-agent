@@ -1,6 +1,6 @@
 """MCP server: the somiti's tools over the Model Context Protocol.
 
-The same six read-only tools the chat assistant uses are published here
+The same seven read-only tools the chat assistant uses are published here
 in the standard MCP format, so any MCP client (for example Cursor or
 Claude Desktop) can call them too. Nothing is re-implemented: every MCP
 tool forwards to app.modules.chat.tools.execute_tool, so the answers
@@ -116,6 +116,26 @@ async def search_knowledge(query: str) -> dict:
     rule passages.
     """
     return await _run("search_knowledge", {"query": query})
+
+
+@mcp.tool()
+async def get_collection_summary(
+    period: str = "last_7_days",
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> dict:
+    """Get the total money collected in a period.
+
+    Loan installments paid plus gata payments, each part and the grand
+    total. period is today, last_7_days, this_month or custom; custom
+    also needs start_date and end_date as YYYY-MM-DD.
+    """
+    args: dict[str, Any] = {"period": period}
+    if start_date is not None:
+        args["start_date"] = start_date
+    if end_date is not None:
+        args["end_date"] = end_date
+    return await _run("get_collection_summary", args)
 
 
 class McpAuthMiddleware:
