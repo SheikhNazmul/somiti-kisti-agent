@@ -4,7 +4,9 @@ The same seven read-only tools the chat assistant uses are published here
 in the standard MCP format, so any MCP client (for example Cursor or
 Claude Desktop) can call them too. Nothing is re-implemented: every MCP
 tool forwards to app.modules.chat.tools.execute_tool, so the answers
-are identical to the chat's.
+are identical to the chat's. It also publishes one resource (the list of
+collection areas) and one ready-made prompt (a weekly collection
+report).
 
 Two ways to run it:
 - Inside the API: main.py mounts it at /mcp (streamable HTTP). A valid
@@ -22,6 +24,7 @@ from starlette.responses import JSONResponse
 
 from app.core.security import decode_access_token
 from app.db.session import SessionLocal
+from app.modules.areas import services as area_services
 from app.modules.chat import tools
 from app.modules.users import repositories as user_repositories
 
@@ -136,6 +139,41 @@ async def get_collection_summary(
     if end_date is not None:
         args["end_date"] = end_date
     return await _run("get_collection_summary", args)
+
+
+@mcp.resource("somiti://areas/list")
+async def areas_list() -> str:
+    """The somiti's collection areas: id, name and collection day."""
+    async with SessionLocal() as session:
+        areas = await area_services.list_areas(session)
+    lines = [
+        f"{area.id}. {area.name} - collection day: {area.collection_day.value}"
+        for area in areas
+    ]
+    return "\n".join(lines)
+
+
+@mcp.prompt()
+def weekly_collection_report(area: str) -> str:
+    """Ready-made instruction: a weekly collection report for one area."""
+    return (
+        f'"{area}" এলাকার এই সপ্তাহের আদায়ের রিপোর্ট তৈরি করো।\n\n'
+        "ধাপগুলো:\n"
+        "1. প্রথমে somiti://areas/list resource থেকে এলাকাগুলোর তালিকা দেখে "
+        f'"{area}" এলাকার id বের করো।\n'
+        "2. তারপর list_due_installments tool-টা ওই area_id দিয়ে ডাকো — "
+        "ওই এলাকার বকেয়া কিস্তিগুলো পাবে।\n"
+        "3. get_collection_summary tool-টা period last_7_days দিয়ে ডাকো — "
+        "সারা সমিতির এই সপ্তাহের মোট আদায় পাবে।\n"
+        "4. দরকার হলে get_member_balance দিয়ে কোনো সদস্যের মোট হিসাব "
+        "যাচাই করো।\n\n"
+        "রিপোর্টে যা যা থাকবে:\n"
+        "- ওই এলাকায় মোট কতটি কিস্তি বকেয়া আছে, মোট কত টাকা বাকি\n"
+        "- কে কে বাকি রেখেছে, তাদের নামের তালিকা\n"
+        "- সারা সমিতির এই সপ্তাহের মোট আদায়\n"
+        "উত্তর বাংলায়, ছোট করে দেবে। কোনো হিসাব বানিয়ে বলবে না — "
+        "শুধু tool থেকে পাওয়া তথ্যই ব্যবহার করবে।"
+    )
 
 
 class McpAuthMiddleware:
