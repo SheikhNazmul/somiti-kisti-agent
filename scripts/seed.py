@@ -6,6 +6,7 @@ from pathlib import Path
 
 from sqlalchemy import select
 
+from app.core.config import get_settings
 from app.core.security import hash_password
 from app.db.session import SessionLocal
 from app.modules.areas.models import Area, CollectionDay
@@ -189,8 +190,15 @@ async def seed_gata(session, members: dict[str, Member], collector: User) -> Non
 
 async def main() -> None:
     async with SessionLocal() as session:
-        areas = await seed_areas(session)
         users = await seed_users(session)
+        if not get_settings().SEED_DEMO_DATA:
+            await session.commit()
+            print(
+                "SEED_DEMO_DATA is off: only user accounts were seeded; "
+                "areas, members, loans and gata were left as they are."
+            )
+            return
+        areas = await seed_areas(session)
         members = await seed_members(session, areas)
         collector = next(u for u in users if u.role == UserRole.collector)
         await seed_loans(session, members, collector)

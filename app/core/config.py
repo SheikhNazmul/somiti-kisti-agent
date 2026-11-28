@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     RAG_TOP_K: int = 4
     RAG_MAX_DISTANCE: float = 0.5
 
+    # When false, the startup seed creates only the user accounts and
+    # leaves the business tables as they are. The live service runs
+    # with false so real data entered by hand is never mixed with demo
+    # data; local runs keep the default true and get the demo data.
+    SEED_DEMO_DATA: bool = True
+
     @field_validator("JWT_SECRET")
     @classmethod
     def validate_jwt_secret(cls, value: SecretStr) -> SecretStr:
