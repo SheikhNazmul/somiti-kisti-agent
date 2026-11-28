@@ -1,6 +1,6 @@
 import { h, initial } from './ui.js';
 import { clearToken, getToken } from './api.js';
-import { loadUser, currentUser, resetUser } from './session.js';
+import { loadUser, currentUser, resetUser, ROLE_NAMES } from './session.js';
 import { renderLogin } from './views/login.js';
 import { renderDashboard } from './views/dashboard.js';
 import { renderMembers } from './views/members.js';
@@ -29,7 +29,7 @@ function shell(activeHash, content) {
       h('nav', { class: 'nav' }, nav),
       h('div', { class: 'spacer' }),
       h('div', { class: 'me' }, h('span', { class: 'avatar' }, initial(u?.full_name)),
-        h('div', null, u?.full_name, h('small', null, u?.role === 'admin' ? 'অ্যাডমিন' : 'কালেক্টর'))),
+        h('div', null, u?.full_name, h('small', null, ROLE_NAMES[u?.role] || u?.role))),
       h('button', { class: 'logout', onClick: logout }, 'লগআউট')),
     h('main', { class: 'main' }, content));
 }

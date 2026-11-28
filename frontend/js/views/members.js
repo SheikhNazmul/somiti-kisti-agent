@@ -1,6 +1,6 @@
 import { h, bn, badge, initial, errorBox, formDialog, toast, TYPES } from '../ui.js';
 import { api } from '../api.js';
-import { isAdmin } from '../session.js';
+import { canManage } from '../session.js';
 
 export async function renderMembers() {
   const page = h('div', { class: 'main', style: 'padding:0' });
@@ -32,7 +32,7 @@ export async function renderMembers() {
   const search = h('input', { type: 'search', placeholder: 'নাম বা ফোন দিয়ে খোঁজো', 'aria-label': 'সদস্য খোঁজো',
     onInput: (e) => { clearTimeout(timer); timer = setTimeout(() => { state.search = e.target.value.trim(); load(); }, 300); } });
 
-  const addBtn = isAdmin() && h('button', { class: 'btn btn-primary', onClick: () => formDialog({
+  const addBtn = canManage() && h('button', { class: 'btn btn-primary', onClick: () => formDialog({
     title: 'নতুন সদস্য',
     fields: [
       { name: 'full_name', label: 'পুরো নাম' },
