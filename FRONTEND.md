@@ -4,8 +4,9 @@ The frontend of Somiti Kisti Agent lives in `frontend/`. It is a thin layer
 over the backend API (see `BACKEND.md`): every figure on every screen comes
 from an API response, and no business rule lives in the frontend.
 
-- **Design:** Bangla UI, warm paper background with navy and saffron, Hind
-  Siliguri font — tokens and screen map in `design/`
+- **Design:** Bangla UI in a SmartPay-style fintech look: cream background,
+  green primary, orange accent, rounded cards, Hind Siliguri font. The screen
+  and endpoint map is in `design/screens.md`
 - **Form:** a static web app (plain HTML, CSS and JS modules, no build step)
 - **API base:** https://somiti-kisti-agent.onrender.com (all calls under
   `/api/v1`). The app calls `/api/v1/...` on its own domain, and the
@@ -64,6 +65,6 @@ Notes for the build:
 
 | Part | State |
 |---|---|
-| Design | Tokens and screen map in `design/`; Figma file in progress |
+| Design | SmartPay-style; screen and endpoint map in `design/screens.md` |
 | Build | Done — seven screens in `frontend/` |
 | Deployment | Netlify, using `frontend/netlify.toml` |
