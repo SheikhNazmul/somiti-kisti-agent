@@ -11,6 +11,7 @@ from app.db.base import Base, TimeStampMixin
 class UserRole(str, enum.Enum):
     admin = "admin"
     collector = "collector"
+    manager = "manager"
 
 
 class User(Base, TimeStampMixin):

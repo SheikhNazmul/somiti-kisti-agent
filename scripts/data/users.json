@@ -16,5 +16,11 @@
     "password": "collector123",
     "full_name": "Karim Sheikh",
     "role": "collector"
+  },
+  {
+    "email": "supervisor@somiti.local",
+    "password": "supervisor123",
+    "full_name": "Somiti Supervisor",
+    "role": "manager"
   }
 ]

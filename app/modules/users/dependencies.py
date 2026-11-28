@@ -41,3 +41,12 @@ async def require_admin(current_user: CurrentUser) -> User:
 
 
 AdminUser = Annotated[User, Depends(require_admin)]
+
+
+async def require_admin_or_manager(current_user: CurrentUser) -> User:
+    if current_user.role not in (UserRole.admin, UserRole.manager):
+        raise ForbiddenError("Manager access required")
+    return current_user
+
+
+AdminOrManagerUser = Annotated[User, Depends(require_admin_or_manager)]

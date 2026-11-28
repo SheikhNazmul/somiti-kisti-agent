@@ -4,7 +4,7 @@ from app.db.session import SessionDep
 from app.modules.areas import services
 from app.modules.areas.models import Area
 from app.modules.areas.schemas import AreaCreate, AreaOut, AreaUpdate
-from app.modules.users.dependencies import AdminUser, CurrentUser
+from app.modules.users.dependencies import AdminOrManagerUser, AdminUser, CurrentUser
 
 areas_router = APIRouter(prefix="/areas", tags=["areas"])
 
@@ -13,7 +13,7 @@ areas_router = APIRouter(prefix="/areas", tags=["areas"])
     "", response_model=AreaOut, status_code=status.HTTP_201_CREATED
 )
 async def create_area(
-    data: AreaCreate, session: SessionDep, admin: AdminUser
+    data: AreaCreate, session: SessionDep, admin: AdminOrManagerUser
 ) -> Area:
     return await services.create_area(session, data)
 
@@ -32,7 +32,7 @@ async def get_area(
 
 @areas_router.patch("/{area_id}", response_model=AreaOut)
 async def update_area(
-    area_id: int, data: AreaUpdate, session: SessionDep, admin: AdminUser
+    area_id: int, data: AreaUpdate, session: SessionDep, admin: AdminOrManagerUser
 ) -> Area:
     return await services.update_area(session, area_id, data)
 

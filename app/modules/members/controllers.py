@@ -10,7 +10,7 @@ from app.modules.members.schemas import (
     MemberOut,
     MemberUpdate,
 )
-from app.modules.users.dependencies import AdminUser, CurrentUser
+from app.modules.users.dependencies import AdminOrManagerUser, AdminUser, CurrentUser
 
 members_router = APIRouter(prefix="/members", tags=["members"])
 
@@ -19,7 +19,7 @@ members_router = APIRouter(prefix="/members", tags=["members"])
     "", response_model=MemberOut, status_code=status.HTTP_201_CREATED
 )
 async def create_member(
-    data: MemberCreate, session: SessionDep, admin: AdminUser
+    data: MemberCreate, session: SessionDep, admin: AdminOrManagerUser
 ) -> Member:
     return await services.create_member(session, data)
 
@@ -53,7 +53,7 @@ async def get_member(
 
 @members_router.patch("/{member_id}", response_model=MemberOut)
 async def update_member(
-    member_id: int, data: MemberUpdate, session: SessionDep, admin: AdminUser
+    member_id: int, data: MemberUpdate, session: SessionDep, admin: AdminOrManagerUser
 ) -> Member:
     return await services.update_member(session, member_id, data)
 
