@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Hazaribag",
+    "collection_day": "sat"
+  },
+  {
+    "name": "Kamrangirchar",
+    "collection_day": "sun"
+  },
+  {
+    "name": "Dhanmondi",
+    "collection_day": "wed"
+  },
+  {
+    "name": "Mirpur",
+    "collection_day": "mon"
+  },
+  {
+    "name": "Uttara",
+    "collection_day": "thu"
+  }
+]
